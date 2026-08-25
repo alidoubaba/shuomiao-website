@@ -179,3 +179,39 @@ document.querySelectorAll('.prod-toggle').forEach(function (btn) {
     btn.textContent = open ? '收起 ↑' : '查看全部产品 ↓';
   });
 });
+
+// 手册翻页书（admin5 2026-08-25）：封面默认，点击/按钮/方向键/swipe 翻页
+document.querySelectorAll('.flipbook').forEach(function (book) {
+  var pages = Array.prototype.slice.call(book.querySelectorAll('.fb-page'));
+  var num = book.querySelector('.fb-num b');
+  var prev = book.querySelector('.fb-prev');
+  var next = book.querySelector('.fb-next');
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(pages.length - 1, i));
+    pages.forEach(function (p, j) { p.classList.toggle('on', j === cur); });
+    if (num) num.textContent = cur + 1;
+    prev.disabled = cur === 0;
+    next.disabled = cur === pages.length - 1;
+  }
+  prev.addEventListener('click', function (e) { e.stopPropagation(); show(cur - 1); });
+  next.addEventListener('click', function (e) { e.stopPropagation(); show(cur + 1); });
+  var vp = book.querySelector('.fb-viewport');
+  vp.addEventListener('click', function (e) {
+    var r = vp.getBoundingClientRect();
+    (e.clientX - r.left) > r.width / 2 ? show(cur + 1) : show(cur - 1);
+  });
+  vp.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); }
+  });
+  var sx = null;
+  vp.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
+  vp.addEventListener('touchend', function (e) {
+    if (sx === null) return;
+    var dx = e.changedTouches[0].clientX - sx;
+    if (Math.abs(dx) > 40) { dx < 0 ? show(cur + 1) : show(cur - 1); }
+    sx = null;
+  });
+  show(0);
+});
