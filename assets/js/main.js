@@ -54,7 +54,7 @@
   // 首页主图轮播（成像示意 + 三款主营产品）
   var hc = document.getElementById('heroCarousel');
   if (hc) {
-    var slides = Array.prototype.slice.call(hc.querySelectorAll('.hc-slide'));
+    var slides = Array.prototype.slice.call(hc.querySelectorAll('.hc-link'));
     var dots = Array.prototype.slice.call(hc.querySelectorAll('.hc-dots button'));
     var tag = document.getElementById('heroTag');
     var caps = ['气体检漏光谱成像仪 · 气云成像示意', 'TF900 · 点型气体探测器', 'X-4 · 四合一气体检测仪', 'Ex-IPgas M10 · 气体检漏光谱成像仪'];
