@@ -215,3 +215,27 @@ document.querySelectorAll('.flipbook').forEach(function (book) {
   });
   show(0);
 });
+
+// 手册封面满屏弹窗（admin5 2026-08-25）：点封面打开 modal，ESC/遮罩/×关闭
+document.querySelectorAll('.fb-cover[data-modal]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var m = document.getElementById(btn.getAttribute('data-modal'));
+    if (!m) return;
+    m.hidden = false;
+    document.body.style.overflow = 'hidden';
+    var vp = m.querySelector('.fb-viewport');
+    if (vp) vp.focus();
+  });
+});
+document.querySelectorAll('.fb-modal').forEach(function (m) {
+  m.addEventListener('click', function (e) {
+    if (e.target.closest('[data-close]') || e.target === m.querySelector('.fb-mask')) {
+      m.hidden = true; document.body.style.overflow = '';
+    }
+  });
+});
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Escape') return;
+  document.querySelectorAll('.fb-modal:not([hidden])').forEach(function (m) { m.hidden = true; });
+  document.body.style.overflow = '';
+});
