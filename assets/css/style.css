@@ -105,7 +105,7 @@ section[id]{scroll-margin-top:76px}
 .cat .no{font-size:13px;color:var(--red);font-weight:700;letter-spacing:2px}
 .cat h3{font-size:17px;color:var(--ink);margin:6px 0 6px;font-weight:700}
 .cat p{font-size:13.5px;color:var(--muted);line-height:1.6}
-.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.prod-grid .prod-card.expandable{display:none}.prod-grid.expanded .prod-card.expandable{display:flex}.prod-more{text-align:center;margin-top:30px}.prod-toggle{background:none;border:0;cursor:pointer;font:inherit;font-size:15px}
 .prod-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:.2s;box-shadow:var(--shadow)}
 .prod-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
 .prod-card .ph{background:#fff;border-bottom:1px solid var(--line);height:210px;display:flex;align-items:center;justify-content:center;padding:14px}

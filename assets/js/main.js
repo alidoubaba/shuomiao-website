@@ -168,3 +168,14 @@
     update();
   }
 })();
+
+// 首页全线布局：默认 9 款，按钮展开全部（admin5 2026-08-25）
+document.querySelectorAll('.prod-toggle').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var grid = document.querySelector('.prod-grid');
+    if (!grid) return;
+    var open = grid.classList.toggle('expanded');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.textContent = open ? '收起 ↑' : '查看全部产品 ↓';
+  });
+});
