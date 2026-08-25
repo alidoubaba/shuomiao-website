@@ -287,3 +287,13 @@ document.addEventListener('keydown', function (e) {
   document.querySelectorAll('.fb-modal:not([hidden])').forEach(function (m) { m.hidden = true; });
   document.body.style.overflow = '';
 });
+
+// 首页 stats 入场动效（进入视口触发一次）
+(function () {
+  var st = document.querySelector('.stats');
+  if (!st || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) { if (en.isIntersecting) { st.classList.add('reveal'); io.disconnect(); } });
+  }, { threshold: 0.3 });
+  io.observe(st);
+})();
