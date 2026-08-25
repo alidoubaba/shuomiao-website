@@ -266,7 +266,17 @@ document.querySelectorAll('.flipbook').forEach(function (book) {
 
 // 手册封面满屏弹窗（admin5 2026-08-25）：点封面打开 modal，ESC/遮罩/×关闭
 document.querySelectorAll('[data-modal]').forEach(function (btn) {
+  function warm() {
+    var m = document.getElementById(btn.getAttribute('data-modal'));
+    if (!m) return;
+    // 预热前 3 页：点开即显，不白屏等待
+    Array.prototype.slice.call(m.querySelectorAll('.fb-page img')).slice(0, 3).forEach(function (im) {
+      var i = new Image(); i.src = im.getAttribute('src');
+    });
+  }
+  btn.addEventListener('pointerenter', warm, { passive: true });   // 桌面悬停预热
   btn.addEventListener('click', function () {
+    warm();
     var m = document.getElementById(btn.getAttribute('data-modal'));
     if (!m) return;
     m.hidden = false;
