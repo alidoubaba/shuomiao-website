@@ -265,7 +265,7 @@ document.querySelectorAll('.flipbook').forEach(function (book) {
 });
 
 // 手册封面满屏弹窗（admin5 2026-08-25）：点封面打开 modal，ESC/遮罩/×关闭
-document.querySelectorAll('.fb-cover[data-modal]').forEach(function (btn) {
+document.querySelectorAll('[data-modal]').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var m = document.getElementById(btn.getAttribute('data-modal'));
     if (!m) return;
