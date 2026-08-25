@@ -297,3 +297,13 @@ document.addEventListener('keydown', function (e) {
   }, { threshold: 0.3 });
   io.observe(st);
 })();
+
+// H5 提速：省流模式/慢速网络下移除跨页预取，把带宽留给当前页（admin5 0825）
+(function () {
+  try {
+    var c = navigator.connection || {};
+    if (c.saveData || /2g/i.test(c.effectiveType || '')) {
+      document.querySelectorAll('link[rel="prefetch"]').forEach(function (l) { l.remove(); });
+    }
+  } catch (e) {}
+})();
