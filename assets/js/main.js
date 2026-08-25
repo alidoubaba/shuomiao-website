@@ -180,40 +180,88 @@ document.querySelectorAll('.prod-toggle').forEach(function (btn) {
   });
 });
 
-// 手册翻页书（admin5 2026-08-25）：封面默认，点击/按钮/方向键/swipe 翻页
+// 手册翻页书 v2（admin5 0825）：翻页 + 滚轮/双指/按钮缩放 + 拖拽平移
 document.querySelectorAll('.flipbook').forEach(function (book) {
+  var viewport = book.querySelector('.fb-viewport');
+  var pagesEl = book.querySelector('.fb-pages');
   var pages = Array.prototype.slice.call(book.querySelectorAll('.fb-page'));
   var num = book.querySelector('.fb-num b');
+  var zoomEl = book.querySelector('.fb-zoom');
   var prev = book.querySelector('.fb-prev');
   var next = book.querySelector('.fb-next');
-  var cur = 0;
+  var zin = book.querySelector('.fb-zoom-in');
+  var zout = book.querySelector('.fb-zoom-out');
+  var cur = 0, zoom = 1, px = 0, py = 0;
+  function apply() {
+    pagesEl.style.transform = 'translate(' + px + 'px,' + py + 'px) scale(' + zoom + ')';
+    viewport.classList.toggle('zoomed', zoom > 1);
+    if (zoomEl) zoomEl.textContent = zoom.toFixed(1) + 'x';
+  }
+  function setZoom(z) {
+    z = Math.max(1, Math.min(4, Math.round(z * 10) / 10));
+    if (z === 1) { px = 0; py = 0; }
+    zoom = z; apply();
+  }
   function show(i) {
     cur = Math.max(0, Math.min(pages.length - 1, i));
-    pages.forEach(function (p, j) { p.classList.toggle('on', j === cur); });
+    pages.forEach(function (p, k) { p.classList.toggle('on', k === cur); });
     if (num) num.textContent = cur + 1;
     prev.disabled = cur === 0;
     next.disabled = cur === pages.length - 1;
   }
   prev.addEventListener('click', function (e) { e.stopPropagation(); show(cur - 1); });
   next.addEventListener('click', function (e) { e.stopPropagation(); show(cur + 1); });
-  var vp = book.querySelector('.fb-viewport');
-  vp.addEventListener('click', function (e) {
-    var r = vp.getBoundingClientRect();
+  if (zin) zin.addEventListener('click', function (e) { e.stopPropagation(); setZoom(zoom + 0.5); });
+  if (zout) zout.addEventListener('click', function (e) { e.stopPropagation(); setZoom(zoom - 0.5); });
+  viewport.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    setZoom(zoom * (e.deltaY < 0 ? 1.18 : 1 / 1.18));
+  }, { passive: false });
+  viewport.addEventListener('click', function (e) {
+    if (zoom > 1) return;
+    var r = viewport.getBoundingClientRect();
     (e.clientX - r.left) > r.width / 2 ? show(cur + 1) : show(cur - 1);
   });
-  vp.addEventListener('keydown', function (e) {
+  viewport.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight') { e.preventDefault(); show(cur + 1); }
     if (e.key === 'ArrowLeft') { e.preventDefault(); show(cur - 1); }
+    if (e.key === '+' || e.key === '=') setZoom(zoom + 0.5);
+    if (e.key === '-') setZoom(zoom - 0.5);
+    if (e.key === '0') setZoom(1);
   });
+  // 拖拽平移（放大态）
+  var drag = null;
+  viewport.addEventListener('pointerdown', function (e) {
+    if (zoom <= 1 || e.button > 0) return;
+    drag = { x: e.clientX, y: e.clientY, px: px, py: py };
+    try { viewport.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  viewport.addEventListener('pointermove', function (e) {
+    if (!drag) return;
+    px = drag.px + (e.clientX - drag.x); py = drag.py + (e.clientY - drag.y);
+    pagesEl.style.transform = 'translate(' + px + 'px,' + py + 'px) scale(' + zoom + ')';
+  });
+  viewport.addEventListener('pointerup', function () { drag = null; });
+  // 双指缩放
+  function dist(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+  var pinch = null;
+  viewport.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 2) pinch = { d: dist(e.touches), z: zoom };
+  }, { passive: true });
+  viewport.addEventListener('touchmove', function (e) {
+    if (pinch && e.touches.length === 2) { e.preventDefault(); setZoom(pinch.z * dist(e.touches) / pinch.d); }
+  }, { passive: false });
+  viewport.addEventListener('touchend', function () { pinch = null; });
+  // 单指滑动翻页（原态）
   var sx = null;
-  vp.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; }, { passive: true });
-  vp.addEventListener('touchend', function (e) {
-    if (sx === null) return;
+  viewport.addEventListener('touchstart', function (e) { if (e.touches.length === 1) sx = e.touches[0].clientX; }, { passive: true });
+  viewport.addEventListener('touchend', function (e) {
+    if (sx === null || zoom > 1) { sx = null; return; }
     var dx = e.changedTouches[0].clientX - sx;
     if (Math.abs(dx) > 40) { dx < 0 ? show(cur + 1) : show(cur - 1); }
     sx = null;
   });
-  show(0);
+  show(0); apply();
 });
 
 // 手册封面满屏弹窗（admin5 2026-08-25）：点封面打开 modal，ESC/遮罩/×关闭
@@ -229,7 +277,7 @@ document.querySelectorAll('.fb-cover[data-modal]').forEach(function (btn) {
 });
 document.querySelectorAll('.fb-modal').forEach(function (m) {
   m.addEventListener('click', function (e) {
-    if (e.target.closest('[data-close]') || e.target === m.querySelector('.fb-mask')) {
+    if (e.target.closest('[data-close]')) {
       m.hidden = true; document.body.style.overflow = '';
     }
   });
