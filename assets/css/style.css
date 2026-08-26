@@ -284,3 +284,56 @@ table.data td:first-child{color:var(--muted)}
 @media (max-width:600px){.logo-img{height:40px}}
 .logo-mark-img{height:30px;width:auto;display:block;flex:0 0 auto}
 @media (max-width:600px){.logo-mark-img{height:26px}}
+
+/* ---------- 产品中心 hero 大下拉（admin5 2026-08-26 五分类导航） ---------- */
+.nav-drop{position:relative;display:inline-flex;align-items:center}
+.nav-drop::after{content:'';display:none;position:absolute;top:100%;left:calc(50% - 90px);width:180px;height:22px}
+.nav-drop:hover::after,.nav-drop:focus-within::after{display:block}
+.nav-mega{position:fixed;top:68px;left:0;right:0;z-index:99;background:rgba(255,255,255,.98);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .18s,transform .18s,visibility .18s}
+.nav-drop:hover .nav-mega,.nav-drop:focus-within .nav-mega{opacity:1;visibility:visible;transform:none}
+.nm-cols{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;padding:18px 4% 12px}
+.nm-col{min-width:0;display:flex;flex-direction:column;align-items:stretch}
+.nav .nav-mega a{display:block;padding:6px 10px;font-size:13.5px;line-height:1.45;color:var(--body);border-bottom:0;border-radius:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav .nav-mega a:hover{background:var(--red-soft);color:var(--red);border-bottom-color:transparent}
+.nav .nav-mega a.active{border-bottom-color:transparent}
+.nm-cat{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:1px;padding:4px 10px 9px;border-bottom:2px solid var(--red);border-radius:0;margin-bottom:6px}
+.nm-cat:hover{color:var(--red)}
+.nm-foot{display:block;margin-top:8px;padding:11px 4% 13px;border-top:1px solid var(--line);font-size:13px;font-weight:600;color:var(--muted);border-radius:0;letter-spacing:.5px}
+.nm-foot:hover{color:var(--red)}
+/* 分类标题/型号锚点行：滚动补偿 + :target 高亮 */
+.series-bar[id],tr[id]{scroll-margin-top:150px}
+.spec tr:target>th,.spec tr:target>td{background:var(--red-soft)}
+.spec tr:target>th{color:var(--red)}
+.cat-sub{margin:30px 0 0;font-size:14px;font-weight:700;color:var(--red);letter-spacing:2px}
+.cat-sub small{color:var(--muted);font-weight:500;letter-spacing:1px;margin-left:8px}
+/* GDS 系统总览 */
+.gds-lead{font-size:15px;line-height:1.95;color:var(--body);margin-top:14px;max-width:62em}
+.gds-lead b{color:var(--ink)}
+.gds-flow{display:flex;align-items:stretch;gap:10px;margin:22px 0 6px;flex-wrap:wrap}
+.gf-node{flex:1;min-width:150px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--red);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.gf-node b{display:block;font-size:15px;color:var(--ink);margin-bottom:4px}
+.gf-node span{font-size:12.5px;color:var(--muted);line-height:1.7}
+.gf-arrow{align-self:center;color:var(--red);font-size:18px;font-weight:700}
+.gds-table{margin-top:18px}
+.gds-note{margin-top:14px;font-size:13px;color:var(--muted);line-height:1.8}
+.gds-manuals{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap}
+@media (max-width:1020px){
+  .nm-cols{grid-template-columns:repeat(3,1fr);row-gap:16px}
+}
+@media (max-width:860px){
+  .nav.open{max-height:calc(100dvh - 68px);overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .nav-drop{display:block}
+  .nav-drop::after{display:none!important}
+  .nav-mega{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;border-bottom:0;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .nm-cols{display:block;padding:0}
+  .nav-mega{max-height:50dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .nav .nav-mega a{font-size:14.5px;padding:11px 4px 11px 18px;border-bottom:1px solid var(--line);border-radius:0;white-space:normal;overflow:visible;text-overflow:clip}
+  .nav .nav-mega a:hover{background:none;color:var(--red)}
+  .nm-cat{display:block;font-size:13px;font-weight:700;color:var(--red);border-bottom:0;padding:12px 4px 4px;margin:0;letter-spacing:2px}
+  .nm-foot{display:none}
+  .gf-arrow{display:none}
+  .gf-node{min-width:calc(50% - 5px)}
+}
+@media (max-width:600px){
+  .gf-node{min-width:100%}
+}
